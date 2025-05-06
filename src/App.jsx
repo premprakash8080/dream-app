@@ -27,77 +27,90 @@ const ProtectedRoute = ({ children }) => {
 }
 
 function App() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <Provider store={store}>
       <Router>
-        <div className="min-h-screen flex flex-col">
-          <Header />
-          
-          <main className="flex-grow">
-            <Routes>
-              {/* Public routes */}
-              <Route path="/" element={<HomePage />} />
-              <Route path="/login" element={<LoginPage />} />
-              
-              {/* Protected dashboard routes */}
-              <Route
-                path="/my-dreams"
-                element={
-                  <ProtectedRoute>
-                    <DashboardLayout>
-                      <DashboardOverview />
-                    </DashboardLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/dreams"
-                element={
-                  <ProtectedRoute>
-                    <DashboardLayout>
-                      <DreamList />
-                    </DashboardLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/add-dream"
-                element={
-                  <ProtectedRoute>
-                    <DashboardLayout>
-                      <AddDream />
-                    </DashboardLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/favourites"
-                element={
-                  <ProtectedRoute>
-                    <DashboardLayout>
-                      <FavouriteDreams />
-                    </DashboardLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/profile"
-                element={
-                  <ProtectedRoute>
-                    <DashboardLayout>
-                      <Profile />
-                    </DashboardLayout>
-                  </ProtectedRoute>
-                }
-              />
+        <Header onSidebarOpen={() => setSidebarOpen(true)} />
+        <main className="pt-16 flex-grow min-h-screen bg-gray-50">
+          <Routes>
+            {/* Public routes */}
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            
+            {/* Protected dashboard routes */}
+            <Route
+              path="/my-dreams"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout
+                    sidebarOpen={sidebarOpen}
+                    onSidebarClose={() => setSidebarOpen(false)}
+                  >
+                    <DashboardOverview />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dreams"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout
+                    sidebarOpen={sidebarOpen}
+                    onSidebarClose={() => setSidebarOpen(false)}
+                  >
+                    <DreamList />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/add-dream"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout
+                    sidebarOpen={sidebarOpen}
+                    onSidebarClose={() => setSidebarOpen(false)}
+                  >
+                    <AddDream />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/favourites"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout
+                    sidebarOpen={sidebarOpen}
+                    onSidebarClose={() => setSidebarOpen(false)}
+                  >
+                    <FavouriteDreams />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout
+                    sidebarOpen={sidebarOpen}
+                    onSidebarClose={() => setSidebarOpen(false)}
+                  >
+                    <Profile />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
 
-              {/* Catch all route */}
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </main>
-
-          <Footer />
-        </div>
+            {/* Catch all route */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </main>
+        <Footer />
       </Router>
     </Provider>
   )

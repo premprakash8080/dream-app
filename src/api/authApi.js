@@ -32,4 +32,14 @@ export const loginUser = async (email, password) => {
 export const logoutUser = async () => {
   await delay(500);
   return { success: true };
+};
+
+export const getUserProfile = async (userId) => {
+  await delay(500);
+  const user = users.find(u => u.id === userId);
+  if (user) {
+    const { password, ...userWithoutPassword } = user;
+    return userWithoutPassword;
+  }
+  throw new Error('User not found');
 }; 

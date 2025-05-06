@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { loginUser, logoutUser } from '../../api/authApi';
+import { loginUser, logoutUser, getUserProfile } from '../../api/authApi';
 
 // Async thunks
 export const login = createAsyncThunk(
@@ -29,12 +29,27 @@ export const logout = createAsyncThunk(
   }
 );
 
+export const fetchProfile = createAsyncThunk(
+  'auth/fetchProfile',
+  async (userId, { rejectWithValue }) => {
+    try {
+      const profile = await getUserProfile(userId);
+      return profile;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 const initialState = {
   user: null,
   token: localStorage.getItem('token'),
   isAuthenticated: !!localStorage.getItem('token'),
   loading: false,
-  error: null
+  error: null,
+  profile: null,
+  profileLoading: false,
+  profileError: null,
 };
 
 const authSlice = createSlice({
@@ -67,6 +82,19 @@ const authSlice = createSlice({
         state.user = null;
         state.token = null;
         state.isAuthenticated = false;
+      })
+      // Profile fetch
+      .addCase(fetchProfile.pending, (state) => {
+        state.profileLoading = true;
+        state.profileError = null;
+      })
+      .addCase(fetchProfile.fulfilled, (state, action) => {
+        state.profileLoading = false;
+        state.profile = action.payload;
+      })
+      .addCase(fetchProfile.rejected, (state, action) => {
+        state.profileLoading = false;
+        state.profileError = action.payload;
       });
   }
 });

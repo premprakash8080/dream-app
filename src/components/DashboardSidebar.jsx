@@ -9,11 +9,10 @@ const SidebarItem = ({ icon, label, to, badge, isExpanded = false, children }) =
         <div className="relative">
             <Link
                 to={to}
-                className={`flex items-center w-full p-3 rounded-lg transition-colors ${
-                    isActive
+                className={`flex items-center w-full p-3 rounded-lg transition-colors ${isActive
                         ? 'bg-purple-50 text-purple-700'
                         : 'text-gray-700 hover:bg-gray-50'
-                }`}
+                    }`}
             >
                 <div className="flex items-center justify-center w-6 h-6 mr-3">
                     {icon}
@@ -36,7 +35,7 @@ const SidebarItem = ({ icon, label, to, badge, isExpanded = false, children }) =
 
 const DashboardSidebar = () => {
     return (
-        <aside className="w-64 bg-white border-r border-gray-200">
+        <aside className="w-64 bg-white border-r border-gray-200 h-full overflow-y-auto p-4">
 
             <nav className="p-4 space-y-2">
                 <SidebarItem
