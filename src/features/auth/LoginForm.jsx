@@ -14,7 +14,7 @@ const LoginForm = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/dashboard');
+      navigate('/my-dreams');
     }
   }, [isAuthenticated, navigate]);
 
