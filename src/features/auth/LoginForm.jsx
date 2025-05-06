@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { login, clearError } from './authSlice';
 
-const LoginForm = () => {
+const LoginForm = ({ onClose }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error, isAuthenticated } = useSelector((state) => state.auth);
@@ -14,9 +14,10 @@ const LoginForm = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
+      if (onClose) onClose();
       navigate('/my-dreams');
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, onClose, navigate]);
 
   const handleChange = (e) => {
     setFormData({
