@@ -130,7 +130,7 @@ function Header() {
 
       {/* Login Modal */}
       <Modal isOpen={loginOpen} onClose={() => setLoginOpen(false)}>
-        <LoginForm />
+        <LoginForm onClose={() => setLoginOpen(false)} />
       </Modal>
     </>
   );
