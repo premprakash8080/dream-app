@@ -2,12 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../features/auth/authSlice';
-import Modal from './Modal';
-import LoginForm from '../features/auth/LoginForm';
 import { Link } from 'react-router-dom';
 
 const Header = ({ onSidebarOpen }) => {
-  const [loginOpen, setLoginOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef(null);
   const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -42,48 +39,50 @@ const Header = ({ onSidebarOpen }) => {
   };
 
   return (
-    <>
-      <nav className="bg-white shadow-sm fixed top-0 left-0 w-full z-50 h-16 flex items-center px-2 sm:px-4">
-        <div className="max-w-7xl mx-auto w-full flex justify-between items-center h-16 gap-x-2">
-          {/* Hamburger for mobile */}
-          <button
-            className="md:hidden flex items-center justify-center p-2 mr-2"
-            onClick={onSidebarOpen}
-            aria-label="Open sidebar"
-          >
-            <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
-          {/* Logo and brand */}
-          <div className="flex items-center gap-x-2">
-            <Link to="/" className="flex items-center">
-              <span className="text-purple-600 text-2xl mr-2">🌙</span>
+    <nav className="bg-white shadow-sm fixed top-0 left-0 w-full z-50 h-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
+        <div className="flex justify-between items-center h-full">
+          {/* Left section */}
+          <div className="flex items-center">
+            {/* Hamburger for mobile */}
+            <button
+              className="md:hidden flex items-center justify-center p-2 -ml-2 mr-2 text-gray-700 hover:text-purple-600 transition-colors"
+              onClick={onSidebarOpen}
+              aria-label="Open sidebar"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            {/* Logo and brand */}
+            <Link to="/" className="flex items-center space-x-2">
+              <span className="text-purple-600 text-2xl">🌙</span>
               <span className="text-xl font-bold text-gray-900">DreamScape</span>
             </Link>
           </div>
-          {/* Navigation items */}
-          <div className="flex items-center space-x-2">
+
+          {/* Right section */}
+          <div className="flex items-center space-x-4">
             {!isAuthenticated ? (
               <>
-                <button
-                  onClick={() => setLoginOpen(true)}
-                  className="text-gray-600 hover:text-purple-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                <Link
+                  to="/login"
+                  className="text-gray-600 hover:text-purple-600 px-4 py-2 rounded-md text-sm font-medium transition-colors"
                 >
                   Login
-                </button>
-                <button
-                  onClick={() => navigate('/signup')}
+                </Link>
+                <Link
+                  to="/signup"
                   className="bg-purple-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-purple-700 transition-colors"
                 >
                   Sign Up
-                </button>
+                </Link>
               </>
             ) : (
               <div className="relative" ref={userMenuRef}>
                 <button
                   onClick={handleUserMenuClick}
-                  className="flex items-center space-x-2 text-gray-700 hover:text-purple-600 transition-colors"
+                  className="flex items-center space-x-3 text-gray-700 hover:text-purple-600 transition-colors"
                 >
                   <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
                     <span className="text-purple-600 font-medium">
@@ -92,7 +91,7 @@ const Header = ({ onSidebarOpen }) => {
                   </div>
                   <span className="text-sm font-medium">{user?.name}</span>
                   <svg
-                    className={`w-4 h-4 transition-transform ${userMenuOpen ? 'rotate-180' : ''}`}
+                    className={`w-4 h-4 transition-transform duration-200 ${userMenuOpen ? 'rotate-180' : ''}`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -107,7 +106,7 @@ const Header = ({ onSidebarOpen }) => {
                     <div className="py-1">
                       <button
                         onClick={handleMyDreamsClick}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                       >
                         My Dreams
                       </button>
@@ -116,13 +115,13 @@ const Header = ({ onSidebarOpen }) => {
                           navigate('/profile');
                           setUserMenuOpen(false);
                         }}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                       >
                         Profile
                       </button>
                       <button
                         onClick={handleLogout}
-                        className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                        className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 transition-colors"
                       >
                         Logout
                       </button>
@@ -133,13 +132,8 @@ const Header = ({ onSidebarOpen }) => {
             )}
           </div>
         </div>
-      </nav>
-
-      {/* Login Modal */}
-      <Modal isOpen={loginOpen} onClose={() => setLoginOpen(false)}>
-        <LoginForm onClose={() => setLoginOpen(false)} />
-      </Modal>
-    </>
+      </div>
+    </nav>
   );
 };
 

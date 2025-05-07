@@ -17,14 +17,14 @@ const RightSidebar = ({ isOpen, onClose, children }) => {
 
           {/* Sidebar */}
           <motion.div
-            className="fixed right-0 top-0 h-full w-1/2 bg-white shadow-lg z-50"
+            className="fixed right-0 top-0 h-full w-full md:w-1/2 bg-white shadow-lg z-50"
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'tween' }}
           >
             {/* Header - Fixed */}
-            <div className="sticky top-0 bg-white border-b border-gray-200 px-8 py-4">
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-4 md:px-8 py-4">
               <div className="flex justify-between items-center">
                 <h2 className="text-xl font-semibold text-gray-900">Dream Details</h2>
                 <button 
@@ -41,7 +41,7 @@ const RightSidebar = ({ isOpen, onClose, children }) => {
 
             {/* Content - Scrollable */}
             <div className="h-[calc(100%-4rem)] overflow-y-auto">
-              <div className="px-8 py-6">
+              <div className="px-4 md:px-8 py-6">
                 {children}
               </div>
             </div>

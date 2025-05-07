@@ -12,6 +12,32 @@ const users = [
 // Simulate API delay
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
+export const signupUser = async (name, email, password) => {
+  await delay(1000); // Simulate network delay
+  
+  // Check if email already exists
+  if (users.some(u => u.email === email)) {
+    throw new Error('Email already registered');
+  }
+
+  // Create new user
+  const newUser = {
+    id: users.length + 1,
+    email,
+    password,
+    name,
+    role: 'user',
+    createdAt: new Date().toISOString()
+  };
+
+  users.push(newUser);
+  
+  return {
+    success: true,
+    message: 'Registration successful. Please login.'
+  };
+};
+
 export const loginUser = async (email, password) => {
   await delay(1000); // Simulate network delay
   

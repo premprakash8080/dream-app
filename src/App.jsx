@@ -7,7 +7,7 @@ import HomePage from './pages/HomePage'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import DashboardLayout from './components/DashboardLayout'
-import LoginPage from './pages/LoginPage'
+import AuthPage from './pages/AuthPage'
 import DashboardOverview from './pages/DashboardOverview'
 import DreamList from './pages/DreamList'
 import AddDream from './pages/AddDream'
@@ -37,7 +37,8 @@ function App() {
           <Routes>
             {/* Public routes */}
             <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
+            <Route path="/login" element={<AuthPage />} />
+            <Route path="/signup" element={<AuthPage />} />
             
             {/* Protected dashboard routes */}
             <Route

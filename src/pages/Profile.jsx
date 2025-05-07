@@ -1,20 +1,46 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchProfile } from '../features/auth/authSlice';
+import { fetchProfile, resetProfileState } from '../features/auth/authSlice';
 import { loadMyDreams } from '../features/dreams/myDreamSlice';
 import RecentActivity from '../components/RecentActivity';
 
 const Profile = () => {
   const dispatch = useDispatch();
-  const { user, profile, profileLoading, profileError } = useSelector((state) => state.auth);
+  const { 
+    user, 
+    profile, 
+    profileLoading, 
+    profileError,
+    isAuthenticated,
+    profileRetryCount 
+  } = useSelector((state) => state.auth);
   const { dreams } = useSelector((state) => state.myDreams);
 
-  useEffect(() => {
-    if (user?.id) {
+  const loadProfile = useCallback(() => {
+    if (user?.id && isAuthenticated) {
       dispatch(fetchProfile(user.id));
+    }
+  }, [dispatch, user?.id, isAuthenticated]);
+
+  useEffect(() => {
+    if (user?.id && isAuthenticated) {
+      loadProfile();
       dispatch(loadMyDreams({ page: 1, limit: 20 }));
     }
-  }, [dispatch, user?.id]);
+    return () => {
+      dispatch(resetProfileState());
+    };
+  }, [dispatch, user?.id, isAuthenticated, loadProfile]);
+
+  // Retry loading profile if failed and retry count is less than 3
+  useEffect(() => {
+    if (profileError && profileRetryCount < 3) {
+      const timer = setTimeout(() => {
+        loadProfile();
+      }, 2000 * (profileRetryCount + 1)); // Exponential backoff
+      return () => clearTimeout(timer);
+    }
+  }, [profileError, profileRetryCount, loadProfile]);
 
   // Build activity list
   const activities = [];
@@ -30,7 +56,7 @@ const Profile = () => {
       activities.push({
         type: 'favourited',
         dream,
-        timestamp: dream.createdAt, // Or use a separate favouritedAt if available
+        timestamp: dream.createdAt,
       });
     }
     // Answered
@@ -46,14 +72,46 @@ const Profile = () => {
   // Sort by timestamp, most recent first
   activities.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
+  if (!isAuthenticated) {
+    return (
+      <div className="p-6 text-center">
+        <h2 className="text-xl font-semibold text-gray-900">Please log in to view your profile</h2>
+      </div>
+    );
+  }
+
   if (profileLoading) {
-    return <div className="p-6">Loading profile...</div>;
+    return (
+      <div className="p-6 flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading profile...</p>
+        </div>
+      </div>
+    );
   }
+
   if (profileError) {
-    return <div className="p-6 text-red-600">Error: {profileError}</div>;
+    return (
+      <div className="p-6 text-center">
+        <div className="bg-red-50 p-4 rounded-lg">
+          <h2 className="text-xl font-semibold text-red-800">Error Loading Profile</h2>
+          <p className="text-red-600 mt-2">{profileError}</p>
+          {profileRetryCount < 3 && (
+            <p className="text-gray-600 mt-2">Retrying in a few seconds...</p>
+          )}
+        </div>
+      </div>
+    );
   }
+
   if (!profile) {
-    return <div className="p-6">No profile data.</div>;
+    return (
+      <div className="p-6 text-center">
+        <h2 className="text-xl font-semibold text-gray-900">Profile Not Found</h2>
+        <p className="text-gray-600 mt-2">We couldn't find your profile information.</p>
+      </div>
+    );
   }
 
   const stats = {

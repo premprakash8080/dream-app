@@ -1,5 +1,7 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { logout } from '../features/auth/authSlice';
 
 const SidebarItem = ({ icon, label, to, badge, isExpanded = false, children }) => {
     const location = useLocation();
@@ -34,6 +36,14 @@ const SidebarItem = ({ icon, label, to, badge, isExpanded = false, children }) =
 };
 
 const DashboardSidebar = () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        dispatch(logout());
+        navigate('/');
+    };
+
     return (
         <aside className="w-64 bg-white border-r border-gray-200 h-full overflow-y-auto p-4">
 
@@ -91,15 +101,17 @@ const DashboardSidebar = () => {
                         to="/profile"
                     />
 
-                    <SidebarItem
-                        icon={
+                    <button
+                        onClick={handleLogout}
+                        className="flex items-center w-full p-3 rounded-lg text-red-600 hover:bg-gray-50 transition-colors"
+                    >
+                        <span className="flex items-center justify-center w-6 h-6 mr-3">
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                             </svg>
-                        }
-                        label="Logout"
-                        to="/logout"
-                    />
+                        </span>
+                        <span className="font-medium">Logout</span>
+                    </button>
                 </div>
             </nav>
         </aside>

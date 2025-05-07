@@ -1,10 +1,12 @@
 import React, { useRef, useEffect } from 'react';
 import DashboardSidebar from './DashboardSidebar';
+import useMediaQuery from '../hooks/useMediaQuery';
 
 const HEADER_HEIGHT = 64; // 16 * 4 (tailwind h-16)
 
 const DashboardLayout = ({ children, sidebarOpen, onSidebarClose }) => {
   const sidebarRef = useRef(null);
+  const isMobile = useMediaQuery('(max-width: 768px)'); // md breakpoint
 
   // Prevent background scroll when sidebar is open
   useEffect(() => {
@@ -45,6 +47,26 @@ const DashboardLayout = ({ children, sidebarOpen, onSidebarClose }) => {
     document.addEventListener('keydown', handleTab);
     return () => document.removeEventListener('keydown', handleTab);
   }, [sidebarOpen]);
+
+  // Handle link clicks in sidebar
+  useEffect(() => {
+    if (!sidebarRef.current) return;
+
+    const handleLinkClick = (e) => {
+      // Check if the clicked element is a link or is inside a link
+      const link = e.target.closest('a');
+      if (link && isMobile) {
+        onSidebarClose();
+      }
+    };
+
+    sidebarRef.current.addEventListener('click', handleLinkClick);
+    return () => {
+      if (sidebarRef.current) {
+        sidebarRef.current.removeEventListener('click', handleLinkClick);
+      }
+    };
+  }, [isMobile, onSidebarClose]);
 
   return (
     <div className="flex min-h-screen bg-gray-50">
